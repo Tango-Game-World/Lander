@@ -5,16 +5,21 @@ public class CollisionHandler : MonoBehaviour
 {
     SceneManager scene;
     [SerializeField] float delayReload = 1f;
+    [SerializeField] float delayNextLevel = 1.5f;
     [SerializeField] AudioClip crashAudio;
     [SerializeField] AudioClip successAudio;
     [SerializeField] int fuelLevel = 0;
+    [SerializeField] ParticleSystem successParticle;
+    [SerializeField] ParticleSystem crashParticle;
 
     AudioSource audioSource;
+    MeshRenderer rocketRenderer;
 
     bool isTransitioning = false;
     void OnCollisionEnter(Collision collision)
     {  
         audioSource = GetComponent<AudioSource>();
+        rocketRenderer = GetComponent<MeshRenderer>();
         if(isTransitioning)
         {
             return;
@@ -41,12 +46,14 @@ public class CollisionHandler : MonoBehaviour
     
     void StartCrashSequence()
     {
-        //add particles
+        
         //reduce fuel level, if fuel level is 0, go to level 1
+        
         isTransitioning = true;
         audioSource.Stop();
         if(!audioSource.isPlaying)
             audioSource.PlayOneShot(crashAudio);
+            crashParticle.Play();
 
         GetComponent<Movements>().enabled = false;
         Invoke("ReloadLevel", delayReload);
@@ -55,14 +62,13 @@ public class CollisionHandler : MonoBehaviour
 
     void StartSuccessSequence()
     {
-        //add sound effect
-        //add particles
         isTransitioning = true;
         audioSource.Stop();
         if(!audioSource.isPlaying)
             audioSource.PlayOneShot(successAudio);
+            successParticle.Play();
         GetComponent<Movements>().enabled = false;
-        Invoke("LoadNextLevel", delayReload);
+        Invoke("LoadNextLevel", delayNextLevel);
     }
 
     void ReloadLevel()
