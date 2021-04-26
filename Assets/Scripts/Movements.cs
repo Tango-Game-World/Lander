@@ -5,8 +5,11 @@ public class Movements : MonoBehaviour
     // Start is called before the first frame update
     [SerializeField] float mainThrust = 1000f;
     [SerializeField] float rotationalSpeed = 1f;
+    [SerializeField] AudioClip thrustAudio;
     Rigidbody rb;
     AudioSource audioSource;
+    
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -27,7 +30,7 @@ public class Movements : MonoBehaviour
             
             if(audioSource.isPlaying == false)
             {
-                audioSource.Play();
+                audioSource.PlayOneShot(thrustAudio);
             }
             else
             {
