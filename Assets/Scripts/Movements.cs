@@ -31,17 +31,7 @@ public class Movements : MonoBehaviour
     {
         if(Input.GetKey(KeyCode.Space))
         {
-            
-            if(!audioSource.isPlaying || !mainEngineParticles.isPlaying)            {
-                audioSource.PlayOneShot(thrustAudio);
-                mainEngineParticles.Play();
-            }
-            else
-            {
-                audioSource.Stop();
-                mainEngineParticles.Stop();
-            }
-            rb.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
+           Launch();
         }
        
     }
@@ -50,15 +40,11 @@ public class Movements : MonoBehaviour
     {
         if(Input.GetKey(KeyCode.A))
         {
-            ApplyRotation(rotationalSpeed);
-            if(!rightEngineThrusterParticles.isPlaying)
-                rightEngineThrusterParticles.Play();
+            Rotate(rotationalSpeed, rightEngineThrusterParticles);
         }
         if(Input.GetKey(KeyCode.D))
         {
-            ApplyRotation(-rotationalSpeed);
-            if(!leftEngineThrusterParticles.isPlaying)
-                leftEngineThrusterParticles.Play();
+          Rotate(-rotationalSpeed, leftEngineThrusterParticles);
         }
     }
 
@@ -67,5 +53,28 @@ public class Movements : MonoBehaviour
         rb.freezeRotation = true; //freeze our rotation when bumped to something, so we can manually rotate
         transform.Rotate(Vector3.forward * rotationSpeed * Time.deltaTime);
         rb.freezeRotation = true;  //unfreeze our rotation after  manual control is taken.
+    }
+
+    void Rotate(float speed, ParticleSystem particle)
+    {
+        ApplyRotation(speed);
+        if(!particle.isPlaying)
+            particle.Play();
+        else
+            particle.Stop();
+    }
+
+    void Launch() 
+    {
+        if(!audioSource.isPlaying || !mainEngineParticles.isPlaying){
+            audioSource.PlayOneShot(thrustAudio);
+            mainEngineParticles.Play();
+        }
+        else
+        {
+            audioSource.Stop();
+            mainEngineParticles.Stop();
+        }
+        rb.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
     }
 }
