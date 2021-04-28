@@ -16,17 +16,40 @@ public class CollisionHandler : MonoBehaviour
     MeshRenderer rocketRenderer;
 
     bool isTransitioning = false;
-    void OnCollisionEnter(Collision collision)
-    {  
+    bool isCollisionDisabled = false;
+
+    void Start()
+    {
         audioSource = GetComponent<AudioSource>();
         rocketRenderer = GetComponent<MeshRenderer>();
-        if(isTransitioning)
+    }
+
+    /// <summary>
+    /// Update is called every frame, if the MonoBehaviour is enabled.
+    /// </summary>
+    void Update()
+    {
+        OnRespondToDebugKeys();
+    }
+
+    void OnRespondToDebugKeys()
+    {
+        if(Input.GetKeyDown(KeyCode.L))
         {
-            return;
+            LoadNextLevel();
         }
+        if(Input.GetKeyDown(KeyCode.C))
+        {
+            isCollisionDisabled = !isCollisionDisabled;
+        }
+    }
+    void OnCollisionEnter(Collision collision)
+    {  
+        
+        if(isTransitioning || isCollisionDisabled){return;}
         else
         {
-            switch (collision.gameObject.tag)
+             switch (collision.gameObject.tag)
             {
                 case "fuel": 
                     fuelLevel++;
@@ -46,7 +69,7 @@ public class CollisionHandler : MonoBehaviour
     
     void StartCrashSequence()
     {
-        
+        //ToDo
         //reduce fuel level, if fuel level is 0, go to level 1
         
         isTransitioning = true;
